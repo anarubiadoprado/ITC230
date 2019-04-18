@@ -1,6 +1,12 @@
-const http = require("http");
+const http = require('http'), fs = require('fs');
+const qs = require('querystring');
+const music = require('./music.js');
+
 http.createServer((req, res) => {
-	const path = req.url.toLowerCase();
+    const url = req.url.split('?'); //separe route on ? mark
+    const query = qs.parse(url[1]); // conver string to obj
+	const path = url[0].toLowerCase();
+    
 	switch(path)
 	{
 		case '/':
@@ -9,6 +15,24 @@ http.createServer((req, res) => {
     	    	if (err) return console.error(err);
      			res.end(data.toString());
   			});
+			break;
+            
+        case '/getall':
+			res.end(JSON.stringify(music.getAll()));
+			break;
+            
+        case '/get':
+			let found = music.get(query.artist); //get the string 
+            res.writeHead(200, {'Content-Type': 'text/plain'});
+            let results = (found) ? JSON.stringify(found) : 'Not Found';
+            res.end(results);
+			break;
+            
+        case '/delete':
+            let exclude = music.delete(query.artist); //get the string 
+            res.writeHead(200, {'Content-Type': 'text/plain'});
+            let newOutput = (exclude) ? JSON.stringify(exclude) : 'Not found ';
+            res.end(newOutput);
 			break;
 
 		case '/about':
@@ -23,3 +47,4 @@ http.createServer((req, res) => {
 		}
 
 }).listen(process.env.PORT || 3000);
+
