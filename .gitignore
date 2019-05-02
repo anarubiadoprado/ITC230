@@ -1,2 +1,4 @@
-
-*.json
+ credentials.js
+ files installed by npm
+node_modules/
+flow/
