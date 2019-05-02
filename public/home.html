@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<title> {{ title }} </title>
+<style type="text/css">
+	body{
+		background: #C0C0C0;
+	}
+	h1{
+		color: #3A6EA5;
+		text-align: center;
+		padding-top: 10px;
+		font: sans-serif;
+    }
+</style>
+</head>
+	<body>
+	<h1> What is up, my friend!? </h1>
+	 
+	 	<form action = "/detail" method = "POST">
+	         <input type="search" name="searchMusic" size="50" />
+	         <br />
+	         <input type = "submit" value = "Search" />
+	      </form>
+
+	   <!--  <ul>
+	    	<li id="myMusics"></li>
+	    </ul> -->
+
+
+	   <h3> Here is a list of music</h3>
+	   {{#each music}} 
+	   	<li> {{ artist}}, {{song}}, and {{year}} </li>
+	   	{{/each}}
+
+
+
+	</body>
+
+</html>

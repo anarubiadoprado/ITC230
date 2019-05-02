@@ -1,0 +1,35 @@
+{
+  "name": "itc230",
+  "version": "1.0.0",
+  "description": "My first node app",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint **/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anarubiadoprado/ITC230.git"
+  },
+  "keywords": [
+    "json",
+    "JavaScript"
+  ],
+  "author": "Ana Rubia do Prado",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anarubiadoprado/ITC230/issues"
+  },
+  "homepage": "https://github.com/anarubiadoprado/ITC230#readme",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4",
+    "express-handlebars": "^3.0.2",
+    "mongoose": "^5.5.4"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "mocha": "^6.1.4"
+  }
+}
