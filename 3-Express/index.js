@@ -17,14 +17,13 @@ app.set("view engine", ".html");
 		app.get('/', (req, res) => {
 	 		//res.type('text/html')
 
-	 		let allSongs = JSON.stringify(music.getAll());
-	 		console.log(allSongs.toString());
-			res.render('home', {title: 'Welcome', result: allSongs});
+	 		let allSongs = (JSON.stringify(music.getAll()));
+			res.render('home', {title: 'All Songs', result: allSongs});
 			});
-/*
+
         app.get('/getall', (req, res) => {
 			res.end(JSON.stringify(music.getAll()));
-			});*/
+			});
 			
       app.get('/get', (req, res) => {
          const url = req.url.split('?'); //separe route on ? mark

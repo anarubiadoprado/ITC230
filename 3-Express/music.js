@@ -15,8 +15,9 @@ exports.getAll = () => {
 };
 
 
+
+
 exports.get = (artist) => {
-  console.log(artist);
     return mySongs.find((item) => {
         return item.artist === artist;
     });
@@ -36,3 +37,4 @@ exports.delete = (artist) => {
    mySongs = newSongs;
    return{ delete: artist, total: mySongs.length};
 };   
+

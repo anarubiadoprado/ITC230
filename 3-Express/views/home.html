@@ -2,6 +2,9 @@
 <head>
 	<meta charset="utf-8">
 	<title> {{ title }} </title>
+	<script>
+	 const music = require('./music.js');
+	</script>
 <style type="text/css">
 	body{
 		background: #C0C0C0;
@@ -30,7 +33,7 @@
 
 	   <h3> Here is a list of music</h3>
 	   {{#each music}} 
-	   	<li> {{ artist}}, {{song}}, and {{year}} </li>
+	   	<li> {{artist}}, {{song}}, and {{year}} </li>
 	   	{{/each}}
 
 
