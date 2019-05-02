@@ -2,6 +2,6 @@
 #ignore
 files installed by npm
 node_modules
-credentials.js
+credential.js
 flow/
 
