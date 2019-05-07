@@ -15,10 +15,10 @@ exports.getAll = () => {
 };
 
 
-exports.get = (artist) => {
-  console.log(artist);
+exports.get = (song) => {
+  console.log(song);
     return mySongs.find((item) => {
-        return item.artist === artist;
+        return item.song === song;
     });
 };
 
@@ -36,3 +36,20 @@ exports.delete = (artist) => {
    mySongs = newSongs;
    return{ delete: artist, total: mySongs.length};
 };   
+
+exports.add = (newSong) => {
+      let look = mySongs.find((oneSong) =>{
+          return oneSong.artist === newSong.artist;
+      });
+      console.log(look);
+
+      if (look){
+        throw new Error ('Error, try a new artis');
+      } else {
+        mySongs.push(newSong);
+        return newSong;     
+
+     }
+
+      console.log(newSong);
+};

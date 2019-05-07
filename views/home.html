@@ -23,17 +23,12 @@
 	         <input type = "submit" value = "Search" />
 	      </form>
 
-	   <!--  <ul>
-	    	<li id="myMusics"></li>
-	   
-
-
-	   <h3> Here is a list of music</h3>
-	   {{#each this.result}} 
-	   	<li> {{result.artist}}, {{result.song}}, and {{result.year}} </li>
-	   	{{/each}}
-		 </ul> -->
-
+	   <form action='/songs'  id="addNewSong" method="POST">
+	   	<p>	Artist: <input type="text" name="artist" /> </p>
+	   	<p>	Song:  <input type="text" name="song" /></p>
+	   	<p>	Year Release: <input type="text" name="year" /></p>
+	    <p> <input type = "submit" value = "Add" /> </p>
+	    </form>
 
 	</body>
 
