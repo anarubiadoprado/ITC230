@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<head>
+	<meta charset="utf-8">
+	<title> {{ title }} </title>
+	<script type="text/javascript" src="music.js"></script>
+
+</head>
+<body>
+<header>
+<h2> Here is your music</h2>
+</header>
+
+	{{#if result}}
+		<li>The artist name:{{ result.artist }}  </li>
+		<li> The song name: {{ result.song }} </li>
+		<li> The year it was release: {{ result.year }} </li>
+	{{else}}
+		Sorry, the song you are searching was not found.
+	 {{/if}}
+
+ 
+ <h3> Want to delete this song? <a href = "/delete?artist={{ result.artist }}" >Click here</a></h3>
+
+
+<footer>
+	<h3><a href="/"> Home </a></h3>
+</footer>
+</body>
+</html>
