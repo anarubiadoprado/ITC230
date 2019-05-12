@@ -52,11 +52,11 @@ const createValidator = [
         	res.render('detail', {title: req.body.searchMusic, result: found});
 		});
 
-		app.post('/songs', createValidator, (req, res) => {
-			const errors = validationResult(req);
+		app.post('/songs', (req, res) => {
+			/*const errors = validationResult(req);
    				 if (!errors.isEmpty()) {
       			return res.status(400).json({ errors: errors.array() });
-    			}
+    			}*/
 			let newSong = {
 				artist: req.body.artist,
 				song: req.body.song,
@@ -67,7 +67,7 @@ const createValidator = [
 				res.status(201).send(result);
 			}
 			catch (error) {
-				res.status(400).send({msg: 'Sorry, not found'});
+				res.status(400).send({msg: 'Sorry, song already exist. Please, try again.'});
 			}
 
 		});

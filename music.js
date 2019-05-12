@@ -28,23 +28,23 @@ exports.get = (song) => {
 
 
 //a delete method to delete the requested item from your array
-exports.delete = (artist) => {
+exports.delete = (song) => {
     let oldLength = mySongs.length;
    let newSongs = mySongs.filter((item) => {
-       return item.artist !== artist;
+       return item.song !== song;
    });
    mySongs = newSongs;
-   return{ delete: artist, total: mySongs.length};
+   return{ delete: song, total: mySongs.length};
 };   
 
 exports.add = (newSong) => {
       let look = mySongs.find((oneSong) =>{
-          return oneSong.artist === newSong.artist;
+          return oneSong.song === newSong.song;
       });
       console.log(look);
 
       if (look){
-        throw new Error ('Error, try a new artis');
+        throw new Error ('Error, try a new song');
       } else {
         mySongs.push(newSong);
         return newSong;     
