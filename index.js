@@ -2,16 +2,19 @@
 const express = require('express');
 const app = express();
 const qs = require('querystring');
-const bodyParser = require("body-parser")
+const bodyParser = require("body-parser");
 const music = require('./music.js');
+
+const songMethods = require('./models/songmethods');
+const songdb = require('./models/song');
 const path = require('path');
-const { check, validationResult } = require('express-validator/check');
+const {check, validationResult } = require('express-validator/check');
 app.set('port', process.env.PORT || 3000);
 app.use(bodyParser.urlencoded({extended: true})); // parse form submissions
 app.use(express.static('public')); // set location for static files
   
 const handlebars =  require("express-handlebars");
-app.engine(".html", handlebars({extname: '.html'}));
+app.engine(".html", handlebars({extname: '.html', defaultLayout: false}));
 app.set("view engine", ".html"); 
 
 const createValidator = [
@@ -25,62 +28,52 @@ const createValidator = [
 	
 			// send static file as response
 		app.get('/', (req, res) => {
-	 		//res.type('text/html')
+	 		res.type('text/html')
+	 		res.sendFile(__dirname +'/views/home.html');
+	 	});
 
-	 		let allSongs = JSON.stringify(music.getAll());
-	 		console.log(allSongs.toString());
-			res.render('home', {title: 'Welcome', result: allSongs});
-			});
-/*
-        app.get('/getall', (req, res) => {
-			res.end(JSON.stringify(music.getAll()));
-			});*/
-			
-      app.get('/get', (req, res) => {
-         const url = req.url.split('?'); //separe route on ? mark
-    	 const query = qs.parse(url[1]); // conver string to obj
-		  const path = url[0].toLowerCase();
-			let found = music.get(query.song); //get the string 
+	 	app.get('/getall', (req, res, next) => {
+		    songdb.find({}, (err, result) => {
+				if(err) return next (err);
+				console.log(result)
+			res.end(JSON.stringify(result));
+		  });
+		});
+	 	
+ 		 
+      app.get('/get', (req, res) => { 
+			let found = songMethods.get(req.query.song); //get the string 
             res.writeHead(200, {'Content-Type': 'text/plain'});
             let results = (found) ? JSON.stringify(found) : 'Not Found';
             res.end(results);
         });
 
-        app.post('/detail', (req, res) => {
-        	console.log(req.body.searchMusic);
-			let found = music.get(req.body.searchMusic); //get the string 
-        	res.render('detail', {title: req.body.searchMusic, result: found});
+        app.post('/detail', (req, res, next) => {
+        	 songMethods.get(req.body.searchMusic).then((result) => {
+        	 	res.render('detail', {result: result});
+        	 	console.log(result);
+        	 }).catch((err) => {
+        	 	return next(err);
+        	 });        	
 		});
 
-		app.post('/songs', (req, res) => {
-			/*const errors = validationResult(req);
-   				 if (!errors.isEmpty()) {
-      			return res.status(400).json({ errors: errors.array() });
-    			}*/
-			let newSong = {
-				artist: req.body.artist,
-				song: req.body.song,
-				year: req.body.year,
-			};
-			try{
-				let result = music.add(newSong);
+		app.post('/songs', (req, res, next) => {
+			songdb.updateOne({'song': req.body.song}, req.body, {upsert:true}, (err, result) => {
 				res.status(201).send(result);
-			}
-			catch (error) {
-				res.status(400).send({msg: 'Sorry, song already exist. Please, try again.'});
-			}
-
+			}).catch((err) => {
+				return next(res.status(400).send({msg: 'Sorry, song already exist. Please, try again.'}));
+			});
 		});
             
-        app.get('/delete', (req, res) => {
-        	console.log(req.query.artist);
-        	const url = req.url.split('?'); //separe route on ? mark
-    	 	const query = qs.parse(url[1]); // conver string to obj
-            let results = music.delete(req.query.artist);
-            console.log(results);
-			res.render('delete', {title: req.query.artist, result: results });
-			});
-
+        app.get('/delete', (req, res, next) => {
+        	console.log(req.query.song);
+            songMethods.delete(req.query.song).then((result) => {
+            	songMethods.count().then((count) => {
+            		res.render('delete', {result: req.body.song , count});
+            	})
+            });
+        }); 
+            
 		// send plain text response
 		app.get('/about', (req, res) => {
 			 res.type('text/plain');

@@ -1,9 +1,9 @@
 let mySongs = [
     {artist: 'Sublime', song: 'BadFish', year: '1992'},
-    {artist: 'Dirtyheads', song: 'Vacation', year: '2017'},
-    {artist: 'Slightlystoopid', song: 'Celebrate', year: '2017'},
+    {artist: 'Dirty Heads', song: 'Vacation', year: '2017'},
+    {artist: 'Dirty Heads', song: 'Celebrate', year: '2017'},
+    {artist: 'Slightly Stoopid', song: '2 AM ', year: '2007'},
     {artist: 'Pepper', song: 'Stone Love', year:'2002'},
-    {artist: 'Badfish', song: 'Whatever', year: '2006'}
 ];
 
 
