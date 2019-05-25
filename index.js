@@ -4,19 +4,20 @@ const app = express();
 const qs = require('querystring');
 const bodyParser = require("body-parser");
 const music = require('./music.js');
+const handlebars =  require("express-handlebars");
 
 const songMethods = require('./models/songmethods');
 const songdb = require('./models/song');
 const path = require('path');
 const {check, validationResult } = require('express-validator/check');
+const songRoutes = require('./ipa/ipa-routes');
+
 app.set('port', process.env.PORT || 3000);
 app.use(bodyParser.urlencoded({extended: true})); // parse form submissions
 app.use(express.static('public')); // set location for static files
   
-const handlebars =  require("express-handlebars");
 app.engine(".html", handlebars({extname: '.html', defaultLayout: false}));
 app.set("view engine", ".html"); 
-
 const createValidator = [
 	check('name')
 		.isLength({ min: 2 }),
@@ -26,20 +27,14 @@ const createValidator = [
 		.isInt({ min: 1000, max: 3000 })	
 	];
 	
+	//routes which should handle request
+	app.use('/songs', songRoutes);
+
 			// send static file as response
 		app.get('/', (req, res) => {
 	 		res.type('text/html')
 	 		res.sendFile(__dirname +'/views/home.html');
-	 	});
-
-	 	app.get('/getall', (req, res, next) => {
-		    songdb.find({}, (err, result) => {
-				if(err) return next (err);
-				console.log(result)
-			res.end(JSON.stringify(result));
-		  });
-		});
-	 	
+	 	});	
  		 
       app.get('/get', (req, res) => { 
 			let found = songMethods.get(req.query.song); //get the string 

@@ -1,4 +1,4 @@
-const cred = require('../credential');
+const cred = require('../credentials');
 const mongoose = require('mongoose');
 
 mongoose.connect(cred.connectionString, { dbName: 'scc-projects', useNewUrlParser: true }); 
