@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <head>
 	<meta charset="utf-8">
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.6.2/react.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/15.6.1/react-dom.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.25.0/babel.min.js"></script>
 	<title> {{ title }} </title>
 <style type="text/css">
 	body{
@@ -12,11 +15,27 @@
 		padding-top: 10px;
 		font: sans-serif;
     }
+		.flex-container {
+      display: -webkit-flex;
+      display: flex;
+      width: 600px;
+      background-color: lightgrey;
+  }
+  #item-list {
+      background-color: cornflowerblue;
+      width: 30%;
+      padding: 0px 10px 0px 0px;
+  }
+  #item-details {
+      background-color: lightcoral;
+      width: 75%;
+      padding: 10px;
+  }
 </style>
 </head>
 	<body>
 	<h1> What is up, my friend!? </h1>
-	 
+	 <!-- 
 	 	<form action = "/detail" method = "POST">
 	         <input type="search" name="searchMusic" size="50" />
 	         <br />
@@ -28,8 +47,95 @@
 	   	<p>	Song:  <input type="text" name="song" /></p>
 	   	<p>	Year Release: <input type="text" name="year" /></p>
 	    <p> <input type = "submit" value = "Add" /> </p>
-	    </form>
+			</form> -->
 
-	</body>
+			<div id="root"> </div>
+
+		<script type="text/babel">
+
+class SongApp extends React.Component {
+			constructor(props){
+			super(props);
+
+			this.state = {
+				items:{{{songs}}},
+				filter: "", //search term
+				curItem: {}//current selected item
+				};
+
+				this.onChange = this.onChange.bind(this);
+			}	
+			// show item details when list item clicked
+      showDetails(event){
+				console.log(event.target);
+        // event.target is item clicked. Assumes each item has an id attribute
+        let editItem = this.state.items.find((item) => {
+          return item._id == event.target.id;
+        });
+        this.setState({curItem: editItem});
+			}
+			
+			 // handle detail changes
+			 onChange(event) {
+        var newItem = this.state.curItem;
+        newItem[event.target.song] = event.target.value
+        this.setState({curItem: newItem});
+      }
+
+		render(){
+
+				return(
+					<div>
+						<Title title="The Best List of Songs" />
+						<div className="flex-container">
+						<ItemList
+						items={this.state.items} 
+						filter={this.state.filter}
+						show={this.showDetails.bind(this)}
+						 />
+						 <ItemDetails item={this.state.curItem} 
+						 change={this.onChange} />
+					</div>
+				</div>	
+				);
+			 }
+		  
+			 
+}
+		const Title = ({title}) => {
+        return (
+           <div><h2>{title}</h2></div>
+        );
+    }
+
+		const ItemList = ({items, filter, show}) => {
+      // return items that match search entry field, or all items if no entry
+      const itemNodes = items.map((item) => {
+        if (!filter || item.song.toLowerCase().includes(filter)) { 
+          return <li id={item._id} key={item._id} onClick={show}>{item.song}</li>
+        }
+      });
+      return <span id="item-list"><ul>{itemNodes}</ul></span>;
+		}
+
+		const ItemDetails = (props) => {
+        return (
+          <span id="item-details">
+            <h3>Details:</h3>
+            <form onChange={props.change}>
+              <input type="text" name="song" placeholder="song" value={props.item.song || ""} /><p/>
+              <input type="text" name="artist" placeholder="artist" value={props.item.artist || ""} /><p/>
+              <input type="number" name="year" placeholder="year" value={props.item.year} />
+              <p/>
+            </form>
+          </span>
+        );
+    }
+		
+		ReactDOM.render(<SongApp />, document.getElementById('root'));
+
+</script>
+
+</body>
 
 </html>

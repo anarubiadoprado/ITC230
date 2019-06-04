@@ -19,7 +19,7 @@ router.get('/ipa/v1/getall', (req, res, next) => {
     })
 });
 
-router.post('/ipa/v1/:findSong', (req, res, next) => {
+router.get('/ipa/v1/:findSong', (req, res, next) => {
     const song = req.params.findSong;
 
     Song.findOne({song})
@@ -37,23 +37,28 @@ router.post('/ipa/v1/:findSong', (req, res, next) => {
 });
 
 router.post('/ipa/v1/add', (req, res, next) => {
-    const song = new Song ({
-        song: req.body.song,
-        artist: req.body.artist,
-        year: req.body.year
+    console.log(req.body);
+    Song.updateOne({'song': req.body.song}, req.body, {upsert:true}, (err, result) => {
+        res.status(201).send(result);
+    })
+    .catch((err) => {
+        res.status(404).json({
+            message: 'Sorry, new song, artist, and year fields where not created'
+        });
     });
-    song.save()
+    /* Song.updateOne({'song': req.body.song})
+    .save()
     .then(result => {
         console.log(result);
         res.status(201).json({
-            createdSong: result
+            newSong: result
         });
     })
     .catch(err => {
         res.status(404).json({
             message: 'Sorry, new song, artist, and year fields where not created'
         });
-    }); 
+    });  */
 });
 
 router.delete('/ipa/v1/:deleteSong', (req, res, next) => {

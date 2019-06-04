@@ -31,10 +31,13 @@ const createValidator = [
 	app.use('/songs', songRoutes);
 
 			// send static file as response
-		app.get('/', (req, res) => {
-	 		res.type('text/html')
-	 		res.sendFile(__dirname +'/views/home.html');
-	 	});	
+		app.get('/', (req, res, next) => {
+			songdb.find((err,songs) => {
+				console.log(songs);
+		if (err) return next (err);
+	 		res.render('home', {songs: JSON.stringify(songs)});
+		 });
+		});	 	
  		 
       app.get('/get', (req, res) => { 
 			let found = songMethods.get(req.query.song); //get the string 
