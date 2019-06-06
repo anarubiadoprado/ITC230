@@ -31,6 +31,9 @@
       width: 75%;
       padding: 10px;
   }
+	.searchbar{
+		margin-bottom: 2em;
+	}
 </style>
 </head>
 	<body>
@@ -63,8 +66,16 @@ class SongApp extends React.Component {
 				curItem: {}//current selected item
 				};
 
+				this.onSearchChange = this.onSearchChange.bind(this);
 				this.onChange = this.onChange.bind(this);
+				this.onSave = this.onSave.bind(this);
+        this.onDelete = this.onDelete.bind(this);
+        this.onClear = this.onClear.bind(this);
 			}	
+			//handle changes on the form
+			onSearchChange(event) {
+				this.setState({filter: event.target.value.toLowerCase()});
+			}
 			// show item details when list item clicked
       showDetails(event){
 				console.log(event.target);
@@ -77,9 +88,61 @@ class SongApp extends React.Component {
 			
 			 // handle detail changes
 			 onChange(event) {
-        var newItem = this.state.curItem;
+				let newItem = this.state.curItem;
+				console.log(event.target);
         newItem[event.target.song] = event.target.value
         this.setState({curItem: newItem});
+			}
+			   // clear details form
+				 onClear() {
+        this.setState({curItem: {}});
+      }
+
+    // Handle item save
+      onSave() {
+        let newItem = this.state.curItem;
+        if (!newItem.title) {
+          return;
+				} 
+			fetch('/ipa/v1/add', {
+				method: "POST",
+        	headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(newItem)
+				})
+				.then(res => res.json())
+        	.then((json) => {
+          let newData;
+          if (!newItem._id) { // add new item to array
+            newData = this.state.items;
+            newItem._id = json._id;
+            newData.push(newItem);
+          } else { // update existing item 
+            newData = this.state.items.map((item) => {
+              if (item._id === newItem._id) {
+                item = newItem; 
+              }
+              return item;
+            });          
+          }
+  
+          // Update state with new array
+          this.setState({items: newData});
+        });
+			}
+			
+			onDelete(){
+        let id = this.state.curItem._id;
+        
+        fetch("/api/v1/delete/" + id).then((response) => {
+          return response.json();
+        }).then((results) => {
+          // Filter all items except the one to be removed
+          const remainder = this.state.items.filter((item) => {
+            return item._id !== id;
+          });
+          // Update state with new array
+          this.setState({items: remainder, curItem: {}});
+        });
       }
 
 		render(){
@@ -87,14 +150,15 @@ class SongApp extends React.Component {
 				return(
 					<div>
 						<Title title="The Best List of Songs" />
+						<SearchForm filter={this.state.filter} change={this.onSearchChange} />
 						<div className="flex-container">
 						<ItemList
 						items={this.state.items} 
 						filter={this.state.filter}
 						show={this.showDetails.bind(this)}
 						 />
-						 <ItemDetails item={this.state.curItem} 
-						 change={this.onChange} />
+						 <ItemDetails item={this.state.curItem} change={this.onChange} save={this.onSave} reset={this.onClear} delete={this.onDelete} />
+
 					</div>
 				</div>	
 				);
@@ -102,11 +166,22 @@ class SongApp extends React.Component {
 		  
 			 
 }
+
+//UI Elements(create the fields)
 		const Title = ({title}) => {
         return (
            <div><h2>{title}</h2></div>
         );
-    }
+		}
+		
+		const SearchForm = (props) => {
+			return (
+				<div class="searchbar">
+					<input	type="text" placeholder="Search for a song" value={props.filter} onChange={props.change}
+				/> <p/>
+				</div>	
+			);
+		}
 
 		const ItemList = ({items, filter, show}) => {
       // return items that match search entry field, or all items if no entry
@@ -123,11 +198,14 @@ class SongApp extends React.Component {
           <span id="item-details">
             <h3>Details:</h3>
             <form onChange={props.change}>
-              <input type="text" name="song" placeholder="song" value={props.item.song || ""} /><p/>
-              <input type="text" name="artist" placeholder="artist" value={props.item.artist || ""} /><p/>
-              <input type="number" name="year" placeholder="year" value={props.item.year} />
+              <input type="text" name="song" placeholder="song" value={props.item.song || " "} /><p/>
+              <input type="text" name="artist" placeholder="artist" value={props.item.artist || " "} /><p/>
+              <input type="number" name="year" placeholder="year" value={props.item.year || " "} />
               <p/>
-            </form>
+						</form>
+						<button onClick={props.save}>Save</button> 
+						 <button onClick={props.reset}>Reset</button> 
+						 <button onClick={props.delete}>Delete</button>
           </span>
         );
     }

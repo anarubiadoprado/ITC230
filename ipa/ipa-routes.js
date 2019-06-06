@@ -42,32 +42,39 @@ router.post('/ipa/v1/add', (req, res, next) => {
         res.status(201).send(result);
     })
     .catch((err) => {
+        console.log(err);
         res.status(404).json({
             message: 'Sorry, new song, artist, and year fields where not created'
         });
     });
-    /* Song.updateOne({'song': req.body.song})
-    .save()
+}); 
+ 
+   /*  const newSong = new Song ({
+        artist: req.body.artist,
+        song: req.body.song,
+        year: req.body.year,
+    });
+    newSong.save()
     .then(result => {
         console.log(result);
         res.status(201).json({
-            newSong: result
+            message: 'Your song, artist, and year were updated.'
         });
     })
     .catch(err => {
         res.status(404).json({
             message: 'Sorry, new song, artist, and year fields where not created'
         });
-    });  */
+    });  
 });
-
-router.delete('/ipa/v1/:deleteSong', (req, res, next) => {
+ */
+router.get('/ipa/v1/delete/:deleteSong', (req, res, next) => {
     const deleteOneSong = req.params.deleteSong;
-    Song.deleteOne({song: deleteOneSong})
+    Song.remove({song: deleteOneSong})
     .exec()
     .then(result => {
         res.status(200).json({
-            deleteOne: result
+            remove: result
         });
     })
     .catch(err => {

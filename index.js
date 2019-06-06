@@ -14,6 +14,7 @@ const songRoutes = require('./ipa/ipa-routes');
 
 app.set('port', process.env.PORT || 3000);
 app.use(bodyParser.urlencoded({extended: true})); // parse form submissions
+app.use(bodyParser.json());
 app.use(express.static('public')); // set location for static files
   
 app.engine(".html", handlebars({extname: '.html', defaultLayout: false}));
