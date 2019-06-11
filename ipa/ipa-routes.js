@@ -68,7 +68,7 @@ router.post('/ipa/v1/add', (req, res, next) => {
     });  
 });
  */
-router.get('/ipa/v1/delete/:deleteSong', (req, res, next) => {
+router.delete('/ipa/v1/delete/:deleteSong', (req, res, next) => {
     const deleteOneSong = req.params.deleteSong;
     Song.remove({song: deleteOneSong})
     .exec()
